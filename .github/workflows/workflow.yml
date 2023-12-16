@@ -1,0 +1,29 @@
+name: Delete DynamoDB Item
+
+on:
+  workflow_dispatch:
+    inputs:
+      delete-key:
+        description: "TF Hash to be deleted from DynamoDB (complete string)"
+        required: true
+
+env:
+  AWS_REGION: ap-northeast-1
+  TABLE: testing-tfstate
+
+jobs:
+  delete-hash:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete DynamoDB Item
+        uses: mooyoul/dynamodb-actions@v1.2.1
+        env:
+          AWS_REGION: ${{ env.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          operation: delete
+          region: ${{ env.AWS_REGION }}
+          table: ${{ env.TABLE }}
+          key: |
+            { "key": "${{ github.event.inputs.delete-key }}" }
