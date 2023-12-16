@@ -26,4 +26,4 @@ jobs:
           region: ${{ env.AWS_REGION }}
           table: ${{ env.TABLE }}
           key: |
-            { "key": "${{ github.event.inputs.delete-key }}" }
+            { "LockID": "${{ github.event.inputs.delete-key }}" }
