@@ -23,7 +23,13 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Delete Hash
+        id: delete-hash
         run: |
-          aws dynamodb delete-item \
-            --table-name ${{  env.TABLE }} \
-            --key '{"LockID": {"S": "${{ github.event.inputs.delete-key }}"}}'
+          OUTPUT=$(aws dynamodb delete-item --table-name ${{ env.TABLE }} --key '{"LockID": {"S": "${{ github.event.inputs.delete-key }}"}}' --return-values ALL_OLD)
+
+          if [ -z "$OUTPUT" ]; then
+            echo "Deletion failed. No output received from the AWS command."
+            exit 1
+          else
+            echo "Deletion successful. Output: $OUTPUT"
+          fi
