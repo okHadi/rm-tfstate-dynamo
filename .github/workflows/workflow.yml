@@ -8,8 +8,8 @@ on:
         required: true
 
 env:
-  AWS_REGION: ap-northeast-1
-  TABLE: testing-tfstate
+  AWS_REGION: us-east-1
+  TABLE: test
 
 jobs:
   delete-hash:
