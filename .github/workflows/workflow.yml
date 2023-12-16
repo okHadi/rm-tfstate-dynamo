@@ -15,15 +15,15 @@ jobs:
   delete-hash:
     runs-on: ubuntu-latest
     steps:
-      - name: Delete DynamoDB Item
-        uses: mooyoul/dynamodb-actions@v1.2.1
-        env:
-          AWS_REGION: ${{ env.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Setup AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          operation: delete
-          region: ${{ env.AWS_REGION }}
-          table: ${{ env.TABLE }}
-          key: |
-            { "LockID": "${{ github.event.inputs.delete-key }}" }
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Delete Hash
+        run: |
+          aws dynamodb delete-item \
+            --table-name ${{  env.TABLE }} \
+            --key '{"LockID": {"S": "${{ github.event.inputs.delete-key }}"}}'
